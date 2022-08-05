@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using PomodoroApp.Data.Entities;
 
 namespace PomodoroApp.Data
 {
@@ -8,6 +9,8 @@ namespace PomodoroApp.Data
         public PomodoroContext(DbContextOptions<PomodoroContext> options) : base(options)
         {
         }
+
+        public DbSet<Task> Tasks { get; set; }
     }
 }
 
