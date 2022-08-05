@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PomodoroApp.Data;
+using PomodoroLogic;
 using PomodoroTask = PomodoroApp.Data.Entities.Task;
 
 namespace PomodoroApp.Controllers
@@ -15,10 +16,12 @@ namespace PomodoroApp.Controllers
     public class PomodoroController : ControllerBase
     {
         private readonly PomodoroContext _context;
+        private PomodoroHelper pomodoroHelper;
 
         public PomodoroController(PomodoroContext context)
         {
             _context = context;
+            pomodoroHelper = new PomodoroHelper();
         }
 
         // GET: api/Pomodoro
@@ -44,14 +47,18 @@ namespace PomodoroApp.Controllers
 
         // PUT: api/Pomodoro/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPomodoroTask(int id, PomodoroTask pomodoroTask)
+        [HttpPut("{taskId}")]
+        public async Task<ActionResult<PomodoroTask>> OnCurrentPomodoroComplete(int taskId)
         {
-            if (id != pomodoroTask.TaskId)
+            var pomodoroTask = await _context.Tasks.FindAsync(taskId);
+
+            if (pomodoroTask == null)
             {
-                return BadRequest();
+                return NotFound("Task not found.");
             }
 
+            // Update number of completed Pomodoros
+            pomodoroTask.NumCompletedPoms = pomodoroHelper.getNewNumCompletedPoms(pomodoroTask.NumCompletedPoms);
             _context.Entry(pomodoroTask).State = EntityState.Modified;
 
             try
@@ -60,17 +67,10 @@ namespace PomodoroApp.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PomodoroTaskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
-            return NoContent();
+            return Ok(pomodoroTask);
         }
 
         // POST: api/Pomodoro
