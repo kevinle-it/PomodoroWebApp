@@ -2,11 +2,13 @@
   white-space: normal;
   text-align: center;
   word-break: break-all;
+  color: white;
 }
 
 html {
   font-size: 14px;
 }
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;

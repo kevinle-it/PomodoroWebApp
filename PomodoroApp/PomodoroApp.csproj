@@ -38,11 +38,17 @@
     <None Remove="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.EntityFrameworkCore.Tools" />
+    <None Remove="ClientApp\src\components\CountdownTimer\" />
+    <None Remove="ClientApp\src\components\Layout\" />
+    <None Remove="ClientApp\src\components\NavMenu\" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Data\Entities\" />
+    <Folder Include="ClientApp\src\components\CountdownTimer\" />
+    <Folder Include="ClientApp\src\components\Layout\" />
+    <Folder Include="ClientApp\src\components\NavMenu\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PomodoroLogic\PomodoroLogic.csproj">

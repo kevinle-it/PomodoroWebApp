@@ -1,4 +1,11 @@
-﻿/* Provide sufficient contrast against white background */
+﻿$pomodoro-color: #c95e55;
+$chestnut-rose: #cf6e66;
+
+body {
+  color: white;
+  background: $pomodoro-color;
+}
+
 a {
   color: #0366d6;
 }
