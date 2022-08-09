@@ -28,7 +28,6 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
-    <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     <None Remove="Data\" />
     <None Remove="Microsoft.EntityFrameworkCore" />
@@ -41,6 +40,10 @@
     <None Remove="ClientApp\src\components\CountdownTimer\" />
     <None Remove="ClientApp\src\components\Layout\" />
     <None Remove="ClientApp\src\components\NavMenu\" />
+    <None Remove="ClientApp\src\store\" />
+    <None Remove="ClientApp\src\store\sagas\" />
+    <None Remove="ClientApp\src\store\selectors\" />
+    <None Remove="ClientApp\src\store\slices\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +52,10 @@
     <Folder Include="ClientApp\src\components\CountdownTimer\" />
     <Folder Include="ClientApp\src\components\Layout\" />
     <Folder Include="ClientApp\src\components\NavMenu\" />
+    <Folder Include="ClientApp\src\store\" />
+    <Folder Include="ClientApp\src\store\sagas\" />
+    <Folder Include="ClientApp\src\store\selectors\" />
+    <Folder Include="ClientApp\src\store\slices\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PomodoroLogic\PomodoroLogic.csproj">
