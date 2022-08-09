@@ -1,5 +1,8 @@
 ﻿import classnames from 'classnames';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentTaskId } from '../../store/selectors/pomodoroSelector';
+import { requestOnCompleteCurrentPomodoro } from '../../store/slices/pomodoroSlice';
 import './styles.scss';
 import useCountdown from './useCountdown';
 
@@ -31,6 +34,9 @@ const BASE_DIGIT_WIDTH = 74; // 74px
 
 const CountdownTimer = () => {
   const timerType = POMODORO_MODES.POMODORO.type;
+
+  const dispatch = useDispatch();
+  const currentTaskId = useSelector(selectCurrentTaskId);
 
   const { minutes, seconds, shouldRun, setShouldRun } = useCountdown({
     initialMinutes: POMODORO_MODES.POMODORO.time.minutes,
@@ -74,6 +80,13 @@ const CountdownTimer = () => {
   const minutesLeftDigitsArrayAndStyle = useMemo(() => {
     return getLeftDigitsAndStyle(minutes);
   }, [getLeftDigitsAndStyle, minutes]);
+
+  useEffect(() => {
+    if (minutes === 0 && seconds === 0 &&
+        currentTaskId && typeof currentTaskId === 'number' && currentTaskId > 0) {
+      dispatch(requestOnCompleteCurrentPomodoro(currentTaskId));
+    }
+  }, [currentTaskId, dispatch, minutes, seconds]);
 
   return (
     <div className="countdown-timer__wrapper">

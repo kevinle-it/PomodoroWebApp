@@ -4,7 +4,7 @@ export const pomodoroSlice = createSlice({
   name: 'pomodoro',
   initialState: {
     isLoading: false,
-    currentTaskId: 0,
+    currentTaskId: undefined,
     currentTaskName: '',
     numEstimatedPoms: 4,
     numCompletedPoms: 0,
