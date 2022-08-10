@@ -1,0 +1,46 @@
+.task-manager {
+  &__wrapper {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  &__title {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9bfbb;
+  }
+
+  &__add-task-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    border: 2px dashed #d08d87;
+    border-radius: 3px;
+    background: none;
+
+    &:hover {
+      border-color: #98b3b5;
+
+      > svg {
+        fill: #dde6e7;
+      }
+
+      > div {
+        color: #dde6e7;
+      }
+    }
+
+    > svg {
+      width: 28px;
+      height: 28px;
+      fill: #e8c4c0;
+    }
+
+    > div {
+      margin-left: 5px;
+      color: #e8c4c0;
+    }
+  }
+}

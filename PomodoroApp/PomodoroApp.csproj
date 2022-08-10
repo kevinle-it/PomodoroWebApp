@@ -44,6 +44,10 @@
     <None Remove="ClientApp\src\store\sagas\" />
     <None Remove="ClientApp\src\store\selectors\" />
     <None Remove="ClientApp\src\store\slices\" />
+    <None Remove="ClientApp\src\components\PomodoroTask\" />
+    <None Remove="ClientApp\src\components\Home\" />
+    <None Remove="ClientApp\src\assets\" />
+    <None Remove="ClientApp\src\components\TaskManager\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +60,10 @@
     <Folder Include="ClientApp\src\store\sagas\" />
     <Folder Include="ClientApp\src\store\selectors\" />
     <Folder Include="ClientApp\src\store\slices\" />
+    <Folder Include="ClientApp\src\components\PomodoroTask\" />
+    <Folder Include="ClientApp\src\components\Home\" />
+    <Folder Include="ClientApp\src\assets\" />
+    <Folder Include="ClientApp\src\components\TaskManager\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PomodoroLogic\PomodoroLogic.csproj">

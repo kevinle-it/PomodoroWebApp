@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 
 import './App.scss';
-import CountdownTimer from './components/CountdownTimer';
 import { Counter } from './components/Counter';
 import { FetchData } from './components/FetchData';
+import Home from './components/Home';
 import { Layout } from './components/Layout';
 
 export default class App extends Component {
@@ -13,7 +13,7 @@ export default class App extends Component {
   render() {
     return (
       <Layout>
-        <Route exact path="/" component={CountdownTimer} />
+        <Route exact path="/" component={Home} />
         <Route path="/counter" component={Counter} />
         <Route path="/fetch-data" component={FetchData} />
       </Layout>
