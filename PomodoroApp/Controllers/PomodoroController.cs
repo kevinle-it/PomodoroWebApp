@@ -78,6 +78,10 @@ namespace PomodoroApp.Controllers
         [HttpPost]
         public async Task<ActionResult<PomodoroTask>> PostPomodoroTask(PomodoroTask pomodoroTask)
         {
+            pomodoroTask.NumCompletedPoms = 0;
+            pomodoroTask.NumCompletedShortBreaks = 0;
+            pomodoroTask.IsCompletedLongBreak = false;
+            pomodoroTask.DateTimeCreated = DateTime.UtcNow;
             _context.Tasks.Add(pomodoroTask);
             await _context.SaveChangesAsync();
 

@@ -1,9 +1,26 @@
 import { call, put, takeLeading } from 'redux-saga/effects';
-import { requestOnCompleteCurrentPomodoro } from '../../services/pomodoroService';
+import { requestCreateNewPomodoroTask, requestOnCompleteCurrentPomodoro } from '../../services/pomodoroService';
 import {
+  requestCreateNewPomodoroTaskFailure,
+  requestCreateNewPomodoroTaskSuccess,
   requestOnCompleteCurrentPomodoroError,
   requestOnCompleteCurrentPomodoroSuccess,
 } from '../slices/pomodoroSlice';
+
+function* createNewPomodoroTask(action) {
+  const { taskName, numEstimatedPoms } = action.payload;
+  try {
+    const response = yield call(requestCreateNewPomodoroTask, taskName, numEstimatedPoms);
+    if (response?.status === 201) {
+      const pomodoroTask = response?.data;
+      yield put(requestCreateNewPomodoroTaskSuccess(pomodoroTask));
+    } else {
+      yield put(requestCreateNewPomodoroTaskFailure());
+    }
+  } catch (e) {
+    yield put(requestCreateNewPomodoroTaskFailure());
+  }
+}
 
 function* onCompleteCurrentPomodoro(action) {
   const taskId = action.payload;
@@ -30,6 +47,7 @@ function* pomodoroSaga() {
   // => USE takeLeading instead, only run saga for 1st dispatched action, drop every other following actions.
   // Want to keep using takeLatest and do the axios cancellation in saga generator function
   // => REFER HERE: https://stackoverflow.com/a/65654254
+  yield takeLeading('pomodoro/requestCreateNewPomodoroTask', createNewPomodoroTask);
   yield takeLeading('pomodoro/requestOnCompleteCurrentPomodoro', onCompleteCurrentPomodoro);
 }
 

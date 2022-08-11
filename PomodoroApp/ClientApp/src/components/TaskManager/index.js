@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectListTasks } from '../../store/selectors/pomodoroSelector';
+import { requestCreateNewPomodoroTask } from '../../store/slices/pomodoroSlice';
 import PomodoroTask from '../PomodoroTask';
 import { ReactComponent as PlusIcon } from './../../assets/ic_plus.svg';
 import { ReactComponent as TriangleDownIcon } from './../../assets/ic_triangle_down.svg';
@@ -8,6 +9,7 @@ import { ReactComponent as TriangleUpIcon } from './../../assets/ic_triangle_up.
 import './styles.scss';
 
 const TaskManager = () => {
+  const dispatch = useDispatch();
   const listTasks = useSelector(selectListTasks);
 
   const [showAddTaskBox, setShowAddTaskBox] = useState(false);
@@ -44,8 +46,14 @@ const TaskManager = () => {
 
   const handleSubmit = useCallback((e) => {
     setShowAddTaskBox(false);
+    const taskName = e.target.taskName.value;
+    const numEstimatedPoms = e.target.numEstimatedPoms.value;
+    dispatch(requestCreateNewPomodoroTask({
+      taskName,
+      numEstimatedPoms,
+    }));
     e.preventDefault();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="task-manager__wrapper">
