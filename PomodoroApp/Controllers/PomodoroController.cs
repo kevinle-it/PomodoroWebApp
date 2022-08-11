@@ -78,14 +78,22 @@ namespace PomodoroApp.Controllers
         [HttpPost]
         public async Task<ActionResult<PomodoroTask>> PostPomodoroTask(PomodoroTask pomodoroTask)
         {
-            pomodoroTask.NumCompletedPoms = 0;
-            pomodoroTask.NumCompletedShortBreaks = 0;
-            pomodoroTask.IsCompletedLongBreak = false;
-            pomodoroTask.DateTimeCreated = DateTime.UtcNow;
-            _context.Tasks.Add(pomodoroTask);
-            await _context.SaveChangesAsync();
+            if (ModelState.IsValid)
+            {
+                if (string.IsNullOrEmpty(pomodoroTask.Name))
+                {
+                    return BadRequest("Pomodoro Task Name should not be null or empty.");
+                }
+                pomodoroTask.NumCompletedPoms = 0;
+                pomodoroTask.NumCompletedShortBreaks = 0;
+                pomodoroTask.IsCompletedLongBreak = false;
+                pomodoroTask.DateTimeCreated = DateTime.UtcNow;
+                _context.Tasks.Add(pomodoroTask);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTask", new { id = pomodoroTask.TaskId }, pomodoroTask);
+                return CreatedAtAction("GetTask", new { id = pomodoroTask.TaskId }, pomodoroTask);
+            }
+            return BadRequest(ModelState);
         }
 
         // DELETE: api/Pomodoro/5
