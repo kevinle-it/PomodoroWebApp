@@ -15,6 +15,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 15px;
     padding: 15px;
     border: 2px dashed #d08d87;
     border-radius: 3px;
@@ -41,6 +42,127 @@
     > div {
       margin-left: 5px;
       color: #e8c4c0;
+    }
+  }
+
+  &__add-task-form {
+    &__wrapper {
+      &__inner {
+        padding: 15px;
+      }
+
+      display: flex;
+      flex-direction: column;
+      border-radius: 6px;
+      background: white;
+      overflow: hidden;
+    }
+
+    &__task-name-input {
+      width: 100%;
+      margin-bottom: 10px;
+      font-size: 22px;
+      font-weight: bold;
+      border: none;
+      border-radius: 3px;
+      color: #555;
+      background: white;
+
+      &:focus {
+        outline: none;
+      }
+
+      &::placeholder {
+        padding-left: 2px;
+        font-style: italic;
+        color: #ddd;
+        opacity: 1; /* Firefox */
+      }
+
+      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        padding-left: 2px;
+        font-style: italic;
+        color: #ddd;
+      }
+
+      &::-ms-input-placeholder { /* Microsoft Edge */
+        padding-left: 2px;
+        font-style: italic;
+        color: #ddd;
+      }
+    }
+
+    &__estimated-poms {
+      &__title {
+        color: #555;
+        margin-bottom: 5px;
+      }
+
+      &__input {
+        &__wrapper {
+          display: flex;
+          flex-direction: row;
+          margin-bottom: 10px;
+
+          > input {
+            width: 80px;
+            margin-right: 9px;
+            padding: 8px 8px;
+            font-weight: bold;
+            border: none;
+            border-radius: 3px;
+            background: #efefef;
+          }
+        }
+
+        &__button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-left: 3px;
+          padding: 6px 14px;
+          border: 2px solid #e2e2e2;
+          border-radius: 3px;
+          background: white;
+
+          > svg {
+            width: 12px;
+            height: 12px;
+            fill: #767676;
+          }
+        }
+      }
+    }
+
+    &__submit {
+      &__wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding: 15px;
+        background: #efefef;
+
+        > button {
+          margin-right: 20px;
+          font-weight: bold;
+          border: none;
+          color: #929292;
+          background: none;
+        }
+
+        > input {
+          padding: 8px 20px;
+          font-weight: bold;
+          border: none;
+          border-radius: 5px;
+          color: white;
+          background: #222;
+
+          &:disabled {
+            background: #b2b2b2;
+          }
+        }
+      }
     }
   }
 }
