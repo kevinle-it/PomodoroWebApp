@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PomodoroApp.Data;
 
 namespace PomodoroApp.Migrations.Sqlite
 {
     [DbContext(typeof(PomodoroContext))]
-    partial class PomodoroContextModelSnapshot : ModelSnapshot
+    [Migration("20220819064631_AddPomodoroConfigurationEntity")]
+    partial class AddPomodoroConfigurationEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
