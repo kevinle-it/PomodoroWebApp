@@ -58,6 +58,18 @@ namespace PomodoroApp.Controllers
                 return NotFound("Task not found.");
             }
 
+            var pomodoroConfig = await _context.PomodoroConfigurations.FirstOrDefaultAsync();
+            // Validate current Pomodoro Mode
+            var pomodoroMode = pomodoroHelper.getCurrentPomodoroMode(
+                    pomodoroTask.NumCompletedPoms,
+                    pomodoroTask.NumCompletedShortBreaks,
+                    pomodoroConfig.LongBreakInterval
+                );
+            if (pomodoroMode != PomodoroHelper.POMODORO_MODE.POMODORO)
+            {
+                return BadRequest($"Invalid Mode [Pomodoro] request. Request this mode instead: {pomodoroMode.ToString()}");
+            }
+
             // Update number of completed Pomodoros
             pomodoroTask.NumCompletedPoms = pomodoroHelper.getNewNumCompletedPoms(pomodoroTask.NumCompletedPoms);
             _context.Entry(pomodoroTask).State = EntityState.Modified;
@@ -77,7 +89,7 @@ namespace PomodoroApp.Controllers
         // POST: api/Pomodoro
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<PomodoroTask>> PostPomodoroTask(PomodoroTask pomodoroTask)
+        public async Task<ActionResult<PomodoroTask>> PostPomodoroTask([FromBody] PomodoroTask pomodoroTask)
         {
             if (ModelState.IsValid)
             {
