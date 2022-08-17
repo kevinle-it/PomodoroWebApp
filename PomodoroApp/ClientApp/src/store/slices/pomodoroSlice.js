@@ -36,6 +36,29 @@ const pomodoroReducers = {
   },
 };
 
+const configsReducers = {
+  requestGetPomodoroConfigs: (state) => {
+    state.isLoading = true;
+  },
+  requestGetPomodoroConfigsSuccess: (state, action) => {
+    state.isLoading = false;
+    state.configs = action.payload;
+  },
+  requestGetPomodoroConfigsError: (state) => {
+    state.isLoading = false;
+  },
+  requestUpdatePomodoroConfigs: (state) => {
+    state.isLoading = true;
+  },
+  requestUpdatePomodoroConfigsSuccess: (state, action) => {
+    state.isLoading = false;
+    state.configs = action.payload;
+  },
+  requestUpdatePomodoroConfigsError: (state) => {
+    state.isLoading = false;
+  },
+};
+
 export const pomodoroSlice = createSlice({
   name: 'pomodoro',
   initialState: {
@@ -47,10 +70,19 @@ export const pomodoroSlice = createSlice({
     numCompletedShortBreaks: 0,
     isCompletedLongBreak: false,
     listTasks: [],
+    configs: {
+      pomodoroLength: 25,
+      shortBreakLength: 5,
+      longBreakLength: 15,
+      autoStartPom: false,
+      autoStartBreak: false,
+      longBreakInterval: 4,
+    },
   },
   reducers: {
-    ...pomodoroReducers,
     ...taskReducers,
+    ...pomodoroReducers,
+    ...configsReducers,
   },
 });
 
@@ -61,6 +93,12 @@ export const {
   requestOnCompleteCurrentPomodoro,
   requestOnCompleteCurrentPomodoroSuccess,
   requestOnCompleteCurrentPomodoroError,
+  requestGetPomodoroConfigs,
+  requestGetPomodoroConfigsSuccess,
+  requestGetPomodoroConfigsError,
+  requestUpdatePomodoroConfigs,
+  requestUpdatePomodoroConfigsSuccess,
+  requestUpdatePomodoroConfigsError,
 } = pomodoroSlice.actions;
 
 export default pomodoroSlice.reducer;

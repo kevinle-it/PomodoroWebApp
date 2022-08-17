@@ -1,10 +1,19 @@
 import { call, put, takeLeading } from 'redux-saga/effects';
-import { requestCreateNewPomodoroTask, requestOnCompleteCurrentPomodoro } from '../../services/pomodoroService';
+import {
+  requestCreateNewPomodoroTask,
+  requestGetPomodoroConfigs,
+  requestOnCompleteCurrentPomodoro,
+  requestUpdatePomodoroConfigs,
+} from '../../services/pomodoroService';
 import {
   requestCreateNewPomodoroTaskFailure,
   requestCreateNewPomodoroTaskSuccess,
+  requestGetPomodoroConfigsError,
+  requestGetPomodoroConfigsSuccess,
   requestOnCompleteCurrentPomodoroError,
   requestOnCompleteCurrentPomodoroSuccess,
+  requestUpdatePomodoroConfigsError,
+  requestUpdatePomodoroConfigsSuccess,
 } from '../slices/pomodoroSlice';
 
 function* createNewPomodoroTask(action) {
@@ -37,6 +46,37 @@ function* onCompleteCurrentPomodoro(action) {
   }
 }
 
+function* getPomodoroConfigs() {
+  try {
+    const response = yield call(requestGetPomodoroConfigs);
+    if (response?.status === 200) {
+      const configs = response?.data;
+      delete configs?.id;
+      yield put(requestGetPomodoroConfigsSuccess(configs));
+    } else {
+      yield put(requestGetPomodoroConfigsError());
+    }
+  } catch (e) {
+    yield put(requestGetPomodoroConfigsError());
+  }
+}
+
+function* updatePomodoroConfigs(action) {
+  const configs = action.payload;
+  try {
+    const response = yield call(requestUpdatePomodoroConfigs, configs);
+    if (response?.status === 200) {
+      const configs = response?.data;
+      delete configs?.id;
+      yield put(requestUpdatePomodoroConfigsSuccess(configs));
+    } else {
+      yield put(requestUpdatePomodoroConfigsError());
+    }
+  } catch (e) {
+    yield put(requestUpdatePomodoroConfigsError());
+  }
+}
+
 function* pomodoroSaga() {
   // takeLatest won't work as expected because after dispatching 1st action, the yield call() has been invoked already
   // Then after the duplicated 2nd action is dispatched, the 1st saga function will be cancelled
@@ -49,6 +89,8 @@ function* pomodoroSaga() {
   // => REFER HERE: https://stackoverflow.com/a/65654254
   yield takeLeading('pomodoro/requestCreateNewPomodoroTask', createNewPomodoroTask);
   yield takeLeading('pomodoro/requestOnCompleteCurrentPomodoro', onCompleteCurrentPomodoro);
+  yield takeLeading('pomodoro/requestGetPomodoroConfigs', getPomodoroConfigs);
+  yield takeLeading('pomodoro/requestUpdatePomodoroConfigs', updatePomodoroConfigs);
 }
 
 export default pomodoroSaga;

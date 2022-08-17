@@ -14,8 +14,8 @@ const Home = () => {
       (currentTaskId, currentTaskName) => ({
         currentTaskId,
         currentTaskName,
-      })
-  ));
+      }),
+    ));
 
   return (
     <div className="home__wrapper">

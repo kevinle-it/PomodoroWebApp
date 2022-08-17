@@ -33,12 +33,15 @@
     font-size: 120px;
     font-weight: bold;
     text-align: center;
+
     &__digit, &__colon, &__digit__minute--left, &__digit__minute--left > div {
       display: inline-block;
     }
+
     &__digit {
       width: 13.5%;
     }
+
     &__colon {
       width: 8%;
     }
