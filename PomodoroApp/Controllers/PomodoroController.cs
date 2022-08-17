@@ -46,9 +46,9 @@ namespace PomodoroApp.Controllers
             return pomodoroTask;
         }
 
-        // PUT: api/Pomodoro/5
+        // PUT: api/Pomodoro/complete/pomodoro/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{taskId}")]
+        [HttpPut("complete/pomodoro/{taskId}")]
         public async Task<ActionResult<PomodoroTask>> OnCurrentPomodoroComplete(int taskId)
         {
             var pomodoroTask = await _context.Tasks.FindAsync(taskId);
@@ -72,6 +72,46 @@ namespace PomodoroApp.Controllers
 
             // Update number of completed Pomodoros
             pomodoroTask.NumCompletedPoms = pomodoroHelper.getNewNumCompletedPoms(pomodoroTask.NumCompletedPoms);
+            _context.Entry(pomodoroTask).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(pomodoroTask);
+        }
+
+        // PUT: api/Pomodoro/complete/shortbreak/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("complete/shortbreak/{taskId}")]
+        public async Task<ActionResult<PomodoroTask>> OnCurrentShortBreakComplete(int taskId)
+        {
+            var pomodoroTask = await _context.Tasks.FindAsync(taskId);
+
+            if (pomodoroTask == null)
+            {
+                return NotFound("Task not found.");
+            }
+
+            var pomodoroConfig = await _context.PomodoroConfigurations.FirstOrDefaultAsync();
+            // Validate current Pomodoro Mode
+            var pomodoroMode = pomodoroHelper.getCurrentPomodoroMode(
+                    pomodoroTask.NumCompletedPoms,
+                    pomodoroTask.NumCompletedShortBreaks,
+                    pomodoroConfig.LongBreakInterval
+                );
+            if (pomodoroMode != PomodoroHelper.POMODORO_MODE.SHORT_BREAK)
+            {
+                return BadRequest($"Invalid Mode [Short Break] request. Request this mode instead: {pomodoroMode.ToString()}");
+            }
+
+            // Update number of completed Short Breaks
+            pomodoroTask.NumCompletedShortBreaks = pomodoroHelper.getNewNumCompletedShortBreaks(pomodoroTask.NumCompletedShortBreaks);
             _context.Entry(pomodoroTask).State = EntityState.Modified;
 
             try
