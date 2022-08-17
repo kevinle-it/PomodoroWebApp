@@ -29,7 +29,11 @@ const pomodoroReducers = {
     state.isCompletedLongBreak = pomodoroTask?.isCompletedLongBreak;
 
     const foundIndex = state.listTasks.findIndex(task => task.taskId === pomodoroTask?.taskId);
-    state.listTasks[foundIndex].numCompletedPoms = pomodoroTask?.numCompletedPoms;
+    if (foundIndex !== -1) {
+      state.listTasks[foundIndex].numCompletedPoms = pomodoroTask?.numCompletedPoms;
+    } else {
+      state.listTasks.push(pomodoroTask);
+    }
   },
   requestOnCompleteCurrentPomodoroError: (state) => {
     state.isLoading = false;
