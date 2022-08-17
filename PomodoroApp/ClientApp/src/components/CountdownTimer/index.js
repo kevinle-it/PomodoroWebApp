@@ -1,48 +1,75 @@
 ﻿import classnames from 'classnames';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentTaskId } from '../../store/selectors/pomodoroSelector';
-import { requestOnCompleteCurrentPomodoro } from '../../store/slices/pomodoroSlice';
+import { getCurrentPomodoroMode, getNextPomodoroMode, POMODORO_MODES } from '../../helpers/pomodoroHelper';
+import {
+  selectConfigs,
+  selectCurrentTaskId,
+  selectNumCompletedPoms,
+  selectNumCompletedShortBreaks,
+} from '../../store/selectors/pomodoroSelector';
+import { requestGetPomodoroConfigs, requestOnCompleteCurrentPomodoro } from '../../store/slices/pomodoroSlice';
 import './styles.scss';
 import useCountdown from './useCountdown';
-
-const POMODORO_MODES = Object.freeze({
-  POMODORO: {
-    type: Symbol('POMODORO'),
-    time: {
-      minutes: 25,
-      seconds: 0,
-    },
-  },
-  SHORT_BREAK: {
-    type: Symbol('SHORT_BREAK'),
-    time: {
-      minutes: 5,
-      seconds: 0,
-    },
-  },
-  LONG_BREAK: {
-    type: Symbol('LONG_BREAK'),
-    time: {
-      minutes: 15,
-      seconds: 0,
-    },
-  },
-});
 
 const BASE_DIGIT_WIDTH = 74; // 74px
 
 const CountdownTimer = () => {
-  const timerType = POMODORO_MODES.POMODORO.type;
-
   const dispatch = useDispatch();
-  const currentTaskId = useSelector(selectCurrentTaskId);
 
-  const { minutes, seconds, shouldRun, setShouldRun } = useCountdown({
-    initialMinutes: POMODORO_MODES.POMODORO.time.minutes,
-    initialSeconds: POMODORO_MODES.POMODORO.time.seconds,
+  useEffect(() => {
+    dispatch(requestGetPomodoroConfigs());
+  }, [dispatch]);
+
+  const {
+    currentTaskId,
+    numCompletedPoms,
+    numCompletedShortBreaks,
+    configs,
+  } = useSelector((state) => ({
+    currentTaskId: selectCurrentTaskId(state),
+    numCompletedPoms: selectNumCompletedPoms(state),
+    numCompletedShortBreaks: selectNumCompletedShortBreaks(state),
+    configs: selectConfigs(state),
+  }));
+
+  const {
+    minutes, setMinutes,
+    seconds,
+    shouldRun, setShouldRun,
+  } = useCountdown({
+    initialMinutes: configs.pomodoroLength,
     shouldStartImmediately: false,
   });
+
+  const [currentMode, setCurrentMode] = useState(() => getCurrentPomodoroMode(
+    numCompletedPoms,
+    numCompletedShortBreaks,
+    configs.longBreakInterval,
+  ));
+
+  useEffect(() => {
+    switch (currentMode) {
+      case POMODORO_MODES.POMODORO.type:
+        setMinutes(configs.pomodoroLength);
+        break;
+      case POMODORO_MODES.SHORT_BREAK.type:
+        setMinutes(configs.shortBreakLength);
+        break;
+      case POMODORO_MODES.LONG_BREAK.type:
+        setMinutes(configs.longBreakLength);
+        break;
+      default:
+        setMinutes(configs.pomodoroLength);
+        break;
+    }
+  }, [
+    configs.longBreakLength,
+    configs.pomodoroLength,
+    configs.shortBreakLength,
+    currentMode,
+    setMinutes,
+  ]);
 
   const onButtonClick = useCallback(() => {
     setShouldRun(!shouldRun);
@@ -85,27 +112,50 @@ const CountdownTimer = () => {
     if (minutes === 0 && seconds === 0 &&
         currentTaskId && typeof currentTaskId === 'number' && currentTaskId > 0) {
       dispatch(requestOnCompleteCurrentPomodoro(currentTaskId));
+
+      const nextPomodoroMode = getNextPomodoroMode(
+        currentMode,
+        numCompletedPoms,
+        numCompletedShortBreaks,
+        configs?.longBreakInterval,
+      );
+      setCurrentMode(nextPomodoroMode);
+      switch (nextPomodoroMode) {
+        case POMODORO_MODES.POMODORO.type:
+          setMinutes(configs?.pomodoroLength || POMODORO_MODES.POMODORO.time.minutes);
+          break;
+        case POMODORO_MODES.SHORT_BREAK.type:
+          setMinutes(configs?.shortBreakLength || POMODORO_MODES.SHORT_BREAK.time.minutes);
+          break;
+        case POMODORO_MODES.LONG_BREAK.type:
+          setMinutes(configs?.longBreakLength || POMODORO_MODES.LONG_BREAK.time.minutes);
+          break;
+        default:
+          setMinutes(configs?.pomodoroLength || POMODORO_MODES.POMODORO.time.minutes);
+          break;
+      }
     }
-  }, [currentTaskId, dispatch, minutes, seconds]);
+  }, [configs.longBreakInterval, configs.longBreakLength, configs.pomodoroLength, configs.shortBreakLength, currentMode,
+      currentTaskId, dispatch, minutes, numCompletedPoms, numCompletedShortBreaks, seconds, setMinutes]);
 
   return (
     <div className="countdown-timer__wrapper">
       <div className="countdown-timer__type-wrapper">
         <button className={classnames(
           'countdown-timer__type',
-          { 'countdown-timer__type--activated': timerType === POMODORO_MODES.POMODORO.type },
+          { 'countdown-timer__type--activated': currentMode === POMODORO_MODES.POMODORO.type },
         )}>
           Pomodoro
         </button>
         <button className={classnames(
           'countdown-timer__type',
-          { 'countdown-timer__type--activated': timerType === POMODORO_MODES.SHORT_BREAK.type },
+          { 'countdown-timer__type--activated': currentMode === POMODORO_MODES.SHORT_BREAK.type },
         )}>
           Short Break
         </button>
         <button className={classnames(
           'countdown-timer__type',
-          { 'countdown-timer__type--activated': timerType === POMODORO_MODES.LONG_BREAK.type },
+          { 'countdown-timer__type--activated': currentMode === POMODORO_MODES.LONG_BREAK.type },
         )}>
           Long Break
         </button>

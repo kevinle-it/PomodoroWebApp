@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useCountdown = (props) => {
-  const { initialMinutes, initialSeconds, shouldStartImmediately } = props;
+  const { initialMinutes = 25, initialSeconds = 0, shouldStartImmediately = false } = props;
 
   const [minutes, setMinutes] = useState(initialMinutes);
   const [seconds, setSeconds] = useState(initialSeconds);
@@ -28,10 +28,9 @@ const useCountdown = (props) => {
   }, [minutes, seconds, shouldRun]);
 
   return {
-    minutes,
-    seconds,
-    shouldRun,
-    setShouldRun,
+    minutes, setMinutes,
+    seconds, setSeconds,
+    shouldRun, setShouldRun,
   };
 };
 

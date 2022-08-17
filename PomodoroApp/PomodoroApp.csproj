@@ -48,6 +48,7 @@
     <None Remove="ClientApp\src\components\Home\" />
     <None Remove="ClientApp\src\assets\" />
     <None Remove="ClientApp\src\components\TaskManager\" />
+    <None Remove="ClientApp\src\helpers\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,6 +65,7 @@
     <Folder Include="ClientApp\src\components\Home\" />
     <Folder Include="ClientApp\src\assets\" />
     <Folder Include="ClientApp\src\components\TaskManager\" />
+    <Folder Include="ClientApp\src\helpers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PomodoroLogic\PomodoroLogic.csproj">
