@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectListTasks } from '../../store/selectors/pomodoroSelector';
-import { requestCreateNewPomodoroTask, requestGetAllPomodoroTasks } from '../../store/slices/pomodoroSlice';
+import { requestCreateNewPomodoroTask, requestGetAllPomodoroTasks, selectTask } from '../../store/slices/pomodoroSlice';
 import PomodoroTask from '../PomodoroTask';
 import { ReactComponent as PlusIcon } from './../../assets/ic_plus.svg';
 import { ReactComponent as TriangleDownIcon } from './../../assets/ic_triangle_down.svg';
@@ -11,6 +11,13 @@ import './styles.scss';
 const TaskManager = () => {
   const dispatch = useDispatch();
   const listTasks = useSelector(selectListTasks);
+  const [listTasksToShow, setListTasksToShow] = useState([]);
+
+  useEffect(() => {
+    if (listTasks?.length > 0) {
+      setListTasksToShow(listTasks);
+    }
+  }, [listTasks]);
 
   useEffect(() => {
     dispatch(requestGetAllPomodoroTasks());
@@ -59,15 +66,37 @@ const TaskManager = () => {
     e.preventDefault();
   }, [dispatch]);
 
+  const onTaskClick = useCallback((selectedIndex) => {
+    dispatch(selectTask(listTasksToShow?.at(selectedIndex)));
+    setListTasksToShow(listTasksToShow.map((task, index) => {
+      if (task.isSelected && index !== selectedIndex) {
+        // Reset selected
+        return {
+          ...task,
+          isSelected: false,
+        };
+      } else if (index === selectedIndex) {
+        // Set new selected
+        return {
+          ...task,
+          isSelected: true,
+        };
+      }
+      return { ...task };
+    }));
+  }, [dispatch, listTasksToShow]);
+
   return (
     <div className="task-manager__wrapper">
       <div className="task-manager__title">Tasks</div>
-      {listTasks && listTasks.map((task, index) => (
+      {listTasksToShow && listTasksToShow.map((task, index) => (
         <PomodoroTask
           key={String(index)}
           name={task?.name}
           numCompletedPoms={task?.numCompletedPoms}
-          numEstimatedPoms={task?.numEstimatedPoms} />
+          numEstimatedPoms={task?.numEstimatedPoms}
+          isSelected={task?.isSelected}
+          onClick={() => onTaskClick(index)} />
       ))}
       {showAddTaskBox ? (
         <form className="task-manager__add-task-form__wrapper" onSubmit={handleSubmit}>

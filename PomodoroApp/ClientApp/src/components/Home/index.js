@@ -1,12 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getCurrentPomodoroMode, POMODORO_MODES } from '../../helpers/pomodoroHelper';
 import {
   selectConfigs,
   selectCurrentTaskId,
   selectCurrentTaskName,
-  selectNumCompletedPoms, selectNumCompletedShortBreaks,
+  selectNumCompletedPoms,
+  selectNumCompletedShortBreaks,
 } from '../../store/selectors/pomodoroSelector';
 import CountdownTimer from '../CountdownTimer';
 import TaskManager from '../TaskManager';

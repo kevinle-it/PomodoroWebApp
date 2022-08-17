@@ -1,6 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const taskReducers = {
+  selectTask: (state, action) => {
+    const selectedTask = action.payload;
+    state.currentTaskId = selectedTask?.taskId;
+    state.currentTaskName = selectedTask?.name;
+    state.numEstimatedPoms = selectedTask?.numEstimatedPoms;
+    state.numCompletedPoms = selectedTask?.numCompletedPoms;
+    state.numCompletedShortBreaks = selectedTask?.numCompletedShortBreaks;
+    state.isCompletedLongBreak = selectedTask?.isCompletedLongBreak;
+  },
   requestCreateNewPomodoroTask: (state) => {
     state.isLoading = true;
   },
@@ -125,6 +134,7 @@ export const pomodoroSlice = createSlice({
 });
 
 export const {
+  selectTask,
   requestCreateNewPomodoroTask,
   requestCreateNewPomodoroTaskSuccess,
   requestCreateNewPomodoroTaskFailure,
