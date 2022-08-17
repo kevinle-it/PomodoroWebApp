@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PomodoroApp.Data;
+using PomodoroApp.Data.Entities;
 using PomodoroLogic;
 using PomodoroTask = PomodoroApp.Data.Entities.Task;
 
@@ -110,6 +111,47 @@ namespace PomodoroApp.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPut("config")]
+        public async Task<ActionResult<PomodoroConfiguration>> UpdatePomodoroConfigs([FromBody] PomodoroConfiguration newPomodoroConfigs)
+        {
+            if (ModelState.IsValid)
+            {
+                var pomodoroConfigs = await _context.PomodoroConfigurations.FirstOrDefaultAsync();
+
+                if (newPomodoroConfigs.PomodoroLength != pomodoroConfigs.PomodoroLength
+                    || newPomodoroConfigs.ShortBreakLength != pomodoroConfigs.ShortBreakLength
+                    || newPomodoroConfigs.LongBreakLength != pomodoroConfigs.LongBreakLength
+                    || newPomodoroConfigs.AutoStartPom != pomodoroConfigs.AutoStartPom
+                    || newPomodoroConfigs.AutoStartBreak != pomodoroConfigs.AutoStartBreak
+                    || newPomodoroConfigs.LongBreakInterval != pomodoroConfigs.LongBreakInterval)
+                {
+                    pomodoroConfigs.PomodoroLength = newPomodoroConfigs.PomodoroLength;
+                    pomodoroConfigs.ShortBreakLength = newPomodoroConfigs.ShortBreakLength;
+                    pomodoroConfigs.LongBreakLength = newPomodoroConfigs.LongBreakLength;
+                    pomodoroConfigs.AutoStartPom = newPomodoroConfigs.AutoStartPom;
+                    pomodoroConfigs.AutoStartBreak = newPomodoroConfigs.AutoStartBreak;
+                    pomodoroConfigs.LongBreakInterval = newPomodoroConfigs.LongBreakInterval;
+                    _context.Entry(pomodoroConfigs).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
+
+                return Ok(pomodoroConfigs);
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpGet("config")]
+        public async Task<ActionResult<PomodoroConfiguration>> GetPomodoroConfigs()
+        {
+            if (ModelState.IsValid)
+            {
+                var pomodoroConfigs = await _context.PomodoroConfigurations.FirstOrDefaultAsync();
+
+                return Ok(pomodoroConfigs);
+            }
+            return BadRequest(ModelState);
         }
 
         private bool PomodoroTaskExists(int id)
