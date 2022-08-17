@@ -17,31 +17,32 @@
     align-items: center;
     margin-top: 15px;
     padding: 15px;
-    border: 2px dashed #d08d87;
+    border: 2px dashed #db8985;
     border-radius: 3px;
-    background: none;
+    background: #c74e49;
 
     &:hover {
-      border-color: #98b3b5;
+      border-color: #dc9592;
 
       > svg {
-        fill: #dde6e7;
+        fill: #f4dcda;
       }
 
       > div {
-        color: #dde6e7;
+        color: #f4dcda;
       }
     }
 
     > svg {
       width: 28px;
       height: 28px;
-      fill: #e8c4c0;
+      fill: #eec2bf;
     }
 
     > div {
       margin-left: 5px;
-      color: #e8c4c0;
+      font-weight: bold;
+      color: #eec2bf;
     }
   }
 
