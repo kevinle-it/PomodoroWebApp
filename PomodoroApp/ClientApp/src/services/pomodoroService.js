@@ -10,7 +10,12 @@ export const requestCreateNewPomodoroTask = async(taskName, numEstimatedPoms) =>
 
 export const requestOnCompleteCurrentPomodoro = async(taskId) => {
   // Return the current pomodoroTask object
-  return await axios.put(`/api/pomodoro/${taskId}`);
+  return await axios.put(`/api/pomodoro/complete/pomodoro/${taskId}`);
+};
+
+export const requestOnCompleteCurrentShortBreak = async(taskId) => {
+  // Return the current pomodoroTask object
+  return await axios.put(`/api/pomodoro/complete/shortbreak/${taskId}`);
 };
 
 export const requestGetPomodoroConfigs = async() => {

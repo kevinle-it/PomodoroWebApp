@@ -3,6 +3,7 @@ import {
   requestCreateNewPomodoroTask,
   requestGetPomodoroConfigs,
   requestOnCompleteCurrentPomodoro,
+  requestOnCompleteCurrentShortBreak,
   requestUpdatePomodoroConfigs,
 } from '../../services/pomodoroService';
 import {
@@ -12,6 +13,8 @@ import {
   requestGetPomodoroConfigsSuccess,
   requestOnCompleteCurrentPomodoroError,
   requestOnCompleteCurrentPomodoroSuccess,
+  requestOnCompleteCurrentShortBreakError,
+  requestOnCompleteCurrentShortBreakSuccess,
   requestUpdatePomodoroConfigsError,
   requestUpdatePomodoroConfigsSuccess,
 } from '../slices/pomodoroSlice';
@@ -43,6 +46,21 @@ function* onCompleteCurrentPomodoro(action) {
     }
   } catch (e) {
     yield put(requestOnCompleteCurrentPomodoroError());
+  }
+}
+
+function* onCompleteCurrentShortBreak(action) {
+  const taskId = action.payload;
+  try {
+    const response = yield call(requestOnCompleteCurrentShortBreak, taskId);
+    if (response?.status === 200) {
+      const pomodoroTask = response?.data;
+      yield put(requestOnCompleteCurrentShortBreakSuccess(pomodoroTask));
+    } else {
+      yield put(requestOnCompleteCurrentShortBreakError());
+    }
+  } catch (e) {
+    yield put(requestOnCompleteCurrentShortBreakError());
   }
 }
 
@@ -89,6 +107,7 @@ function* pomodoroSaga() {
   // => REFER HERE: https://stackoverflow.com/a/65654254
   yield takeLeading('pomodoro/requestCreateNewPomodoroTask', createNewPomodoroTask);
   yield takeLeading('pomodoro/requestOnCompleteCurrentPomodoro', onCompleteCurrentPomodoro);
+  yield takeLeading('pomodoro/requestOnCompleteCurrentShortBreak', onCompleteCurrentShortBreak);
   yield takeLeading('pomodoro/requestGetPomodoroConfigs', getPomodoroConfigs);
   yield takeLeading('pomodoro/requestUpdatePomodoroConfigs', updatePomodoroConfigs);
 }

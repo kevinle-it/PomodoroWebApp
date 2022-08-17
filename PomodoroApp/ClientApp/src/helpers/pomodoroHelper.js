@@ -55,6 +55,13 @@ export const getNextPomodoroMode = (
       }
       return POMODORO_MODES.LONG_BREAK.type;
     case POMODORO_MODES.SHORT_BREAK.type:
+      if (numCompletedPoms % longBreakInterval !== 0) {
+        if ((numCompletedShortBreaks + 1) < numCompletedPoms) {
+          return POMODORO_MODES.SHORT_BREAK.type;
+        }
+        return POMODORO_MODES.POMODORO.type;
+      }
+      return POMODORO_MODES.LONG_BREAK.type;
     case POMODORO_MODES.LONG_BREAK.type:
     default:
       return POMODORO_MODES.POMODORO.type;

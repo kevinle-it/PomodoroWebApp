@@ -38,6 +38,29 @@ const pomodoroReducers = {
   requestOnCompleteCurrentPomodoroError: (state) => {
     state.isLoading = false;
   },
+  requestOnCompleteCurrentShortBreak: (state) => {
+    state.isLoading = true;
+  },
+  requestOnCompleteCurrentShortBreakSuccess: (state, action) => {
+    const pomodoroTask = action.payload;
+    state.isLoading = false;
+    state.currentTaskId = pomodoroTask?.taskId;
+    state.currentTaskName = pomodoroTask?.name;
+    state.numEstimatedPoms = pomodoroTask?.numEstimatedPoms;
+    state.numCompletedPoms = pomodoroTask?.numCompletedPoms;
+    state.numCompletedShortBreaks = pomodoroTask?.numCompletedShortBreaks;
+    state.isCompletedLongBreak = pomodoroTask?.isCompletedLongBreak;
+
+    const foundIndex = state.listTasks.findIndex(task => task.taskId === pomodoroTask?.taskId);
+    if (foundIndex !== -1) {
+      state.listTasks[foundIndex].numCompletedShortBreaks = pomodoroTask?.numCompletedShortBreaks;
+    } else {
+      state.listTasks.push(pomodoroTask);
+    }
+  },
+  requestOnCompleteCurrentShortBreakError: (state) => {
+    state.isLoading = false;
+  },
 };
 
 const configsReducers = {
@@ -97,6 +120,9 @@ export const {
   requestOnCompleteCurrentPomodoro,
   requestOnCompleteCurrentPomodoroSuccess,
   requestOnCompleteCurrentPomodoroError,
+  requestOnCompleteCurrentShortBreak,
+  requestOnCompleteCurrentShortBreakSuccess,
+  requestOnCompleteCurrentShortBreakError,
   requestGetPomodoroConfigs,
   requestGetPomodoroConfigsSuccess,
   requestGetPomodoroConfigsError,

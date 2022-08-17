@@ -8,7 +8,11 @@ import {
   selectNumCompletedPoms,
   selectNumCompletedShortBreaks,
 } from '../../store/selectors/pomodoroSelector';
-import { requestGetPomodoroConfigs, requestOnCompleteCurrentPomodoro } from '../../store/slices/pomodoroSlice';
+import {
+  requestGetPomodoroConfigs,
+  requestOnCompleteCurrentPomodoro,
+  requestOnCompleteCurrentShortBreak,
+} from '../../store/slices/pomodoroSlice';
 import './styles.scss';
 import useCountdown from './useCountdown';
 
@@ -129,7 +133,20 @@ const CountdownTimer = () => {
   useEffect(() => {
     if (minutes === 0 && seconds === 0 &&
         currentTaskId && typeof currentTaskId === 'number' && currentTaskId > 0) {
-      dispatch(requestOnCompleteCurrentPomodoro(currentTaskId));
+
+      switch (currentMode) {
+        case POMODORO_MODES.POMODORO.type:
+          dispatch(requestOnCompleteCurrentPomodoro(currentTaskId));
+          break;
+        case POMODORO_MODES.SHORT_BREAK.type:
+          dispatch(requestOnCompleteCurrentShortBreak(currentTaskId));
+          break;
+        case POMODORO_MODES.LONG_BREAK.type:
+          break;
+        default:
+          dispatch(requestOnCompleteCurrentPomodoro(currentTaskId));
+          break;
+      }
 
       const nextPomodoroMode = getNextPomodoroMode(
         currentMode,
