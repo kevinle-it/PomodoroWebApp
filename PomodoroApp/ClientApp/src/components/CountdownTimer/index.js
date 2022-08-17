@@ -71,6 +71,24 @@ const CountdownTimer = () => {
     setMinutes,
   ]);
 
+  const onChangePomodoroMode = useCallback(() => {
+    if (currentMode !== POMODORO_MODES.POMODORO.type) {
+      setCurrentMode(POMODORO_MODES.POMODORO.type);
+    }
+  }, [currentMode]);
+
+  const onChangeShortBreakMode = useCallback(() => {
+    if (currentMode !== POMODORO_MODES.SHORT_BREAK.type) {
+      setCurrentMode(POMODORO_MODES.SHORT_BREAK.type);
+    }
+  }, [currentMode]);
+
+  const onChangeLongBreakMode = useCallback(() => {
+    if (currentMode !== POMODORO_MODES.LONG_BREAK.type) {
+      setCurrentMode(POMODORO_MODES.LONG_BREAK.type);
+    }
+  }, [currentMode]);
+
   const onButtonClick = useCallback(() => {
     setShouldRun(!shouldRun);
   }, [setShouldRun, shouldRun]);
@@ -144,19 +162,19 @@ const CountdownTimer = () => {
         <button className={classnames(
           'countdown-timer__type',
           { 'countdown-timer__type--activated': currentMode === POMODORO_MODES.POMODORO.type },
-        )}>
+        )} onClick={onChangePomodoroMode}>
           Pomodoro
         </button>
         <button className={classnames(
           'countdown-timer__type',
           { 'countdown-timer__type--activated': currentMode === POMODORO_MODES.SHORT_BREAK.type },
-        )}>
+        )} onClick={onChangeShortBreakMode}>
           Short Break
         </button>
         <button className={classnames(
           'countdown-timer__type',
           { 'countdown-timer__type--activated': currentMode === POMODORO_MODES.LONG_BREAK.type },
-        )}>
+        )} onClick={onChangeLongBreakMode}>
           Long Break
         </button>
       </div>
