@@ -32,20 +32,6 @@ namespace PomodoroApp.Controllers
             return await _context.Tasks.ToListAsync();
         }
 
-        // GET: api/Pomodoro/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PomodoroTask>> GetPomodoroTask(int id)
-        {
-            var pomodoroTask = await _context.Tasks.FindAsync(id);
-
-            if (pomodoroTask == null)
-            {
-                return NotFound();
-            }
-
-            return pomodoroTask;
-        }
-
         // PUT: api/Pomodoro/complete/pomodoro/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("complete/pomodoro/{taskId}")]
@@ -147,22 +133,6 @@ namespace PomodoroApp.Controllers
                 return CreatedAtAction("GetTask", new { id = pomodoroTask.TaskId }, pomodoroTask);
             }
             return BadRequest(ModelState);
-        }
-
-        // DELETE: api/Pomodoro/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePomodoroTask(int id)
-        {
-            var pomodoroTask = await _context.Tasks.FindAsync(id);
-            if (pomodoroTask == null)
-            {
-                return NotFound();
-            }
-
-            _context.Tasks.Remove(pomodoroTask);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         [HttpPut("config")]
