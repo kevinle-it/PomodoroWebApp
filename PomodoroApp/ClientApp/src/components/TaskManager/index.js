@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectListTasks } from '../../store/selectors/pomodoroSelector';
-import { requestCreateNewPomodoroTask } from '../../store/slices/pomodoroSlice';
+import { requestCreateNewPomodoroTask, requestGetAllPomodoroTasks } from '../../store/slices/pomodoroSlice';
 import PomodoroTask from '../PomodoroTask';
 import { ReactComponent as PlusIcon } from './../../assets/ic_plus.svg';
 import { ReactComponent as TriangleDownIcon } from './../../assets/ic_triangle_down.svg';
@@ -11,6 +11,10 @@ import './styles.scss';
 const TaskManager = () => {
   const dispatch = useDispatch();
   const listTasks = useSelector(selectListTasks);
+
+  useEffect(() => {
+    dispatch(requestGetAllPomodoroTasks());
+  }, [dispatch]);
 
   const [showAddTaskBox, setShowAddTaskBox] = useState(false);
   const [numEstimatedPoms, setNumEstimatedPoms] = useState(1);

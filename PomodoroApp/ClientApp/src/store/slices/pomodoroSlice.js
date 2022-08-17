@@ -12,6 +12,17 @@ const taskReducers = {
   requestCreateNewPomodoroTaskFailure: (state) => {
     state.isLoading = false;
   },
+  requestGetAllPomodoroTasks: (state) => {
+    state.isLoading = true;
+  },
+  requestGetAllPomodoroTasksSuccess: (state, action) => {
+    const listTasks = action.payload;
+    state.isLoading = false;
+    state.listTasks = listTasks;
+  },
+  requestGetAllPomodoroTasksFailure: (state) => {
+    state.isLoading = false;
+  },
 };
 
 const pomodoroReducers = {
@@ -117,6 +128,9 @@ export const {
   requestCreateNewPomodoroTask,
   requestCreateNewPomodoroTaskSuccess,
   requestCreateNewPomodoroTaskFailure,
+  requestGetAllPomodoroTasks,
+  requestGetAllPomodoroTasksSuccess,
+  requestGetAllPomodoroTasksFailure,
   requestOnCompleteCurrentPomodoro,
   requestOnCompleteCurrentPomodoroSuccess,
   requestOnCompleteCurrentPomodoroError,

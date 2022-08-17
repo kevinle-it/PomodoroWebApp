@@ -1,6 +1,7 @@
 import { call, put, takeLeading } from 'redux-saga/effects';
 import {
   requestCreateNewPomodoroTask,
+  requestGetAllPomodoroTasks,
   requestGetPomodoroConfigs,
   requestOnCompleteCurrentPomodoro,
   requestOnCompleteCurrentShortBreak,
@@ -9,6 +10,8 @@ import {
 import {
   requestCreateNewPomodoroTaskFailure,
   requestCreateNewPomodoroTaskSuccess,
+  requestGetAllPomodoroTasksFailure,
+  requestGetAllPomodoroTasksSuccess,
   requestGetPomodoroConfigsError,
   requestGetPomodoroConfigsSuccess,
   requestOnCompleteCurrentPomodoroError,
@@ -31,6 +34,20 @@ function* createNewPomodoroTask(action) {
     }
   } catch (e) {
     yield put(requestCreateNewPomodoroTaskFailure());
+  }
+}
+
+function* getAllPomodoroTasks() {
+  try {
+    const response = yield call(requestGetAllPomodoroTasks);
+    if (response?.status === 200) {
+      const listTasks = response?.data;
+      yield put(requestGetAllPomodoroTasksSuccess(listTasks));
+    } else {
+      yield put(requestGetAllPomodoroTasksFailure());
+    }
+  } catch (e) {
+    yield put(requestGetAllPomodoroTasksFailure());
   }
 }
 
@@ -106,6 +123,7 @@ function* pomodoroSaga() {
   // Want to keep using takeLatest and do the axios cancellation in saga generator function
   // => REFER HERE: https://stackoverflow.com/a/65654254
   yield takeLeading('pomodoro/requestCreateNewPomodoroTask', createNewPomodoroTask);
+  yield takeLeading('pomodoro/requestGetAllPomodoroTasks', getAllPomodoroTasks);
   yield takeLeading('pomodoro/requestOnCompleteCurrentPomodoro', onCompleteCurrentPomodoro);
   yield takeLeading('pomodoro/requestOnCompleteCurrentShortBreak', onCompleteCurrentShortBreak);
   yield takeLeading('pomodoro/requestGetPomodoroConfigs', getPomodoroConfigs);
