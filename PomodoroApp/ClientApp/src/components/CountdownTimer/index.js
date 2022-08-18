@@ -9,7 +9,6 @@ import {
   selectNumCompletedShortBreaks,
 } from '../../store/selectors/pomodoroSelector';
 import {
-  requestGetPomodoroConfigs,
   requestOnCompleteCurrentPomodoro,
   requestOnCompleteCurrentShortBreak,
 } from '../../store/slices/pomodoroSlice';
@@ -20,10 +19,6 @@ const BASE_DIGIT_WIDTH = 74; // 74px
 
 const CountdownTimer = () => {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(requestGetPomodoroConfigs());
-  }, [dispatch]);
 
   const {
     currentTaskId,

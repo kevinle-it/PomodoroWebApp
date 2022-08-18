@@ -1,5 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export const initialState = {
+  isLoading: false,
+  currentTaskId: undefined,
+  currentTaskName: '',
+  numEstimatedPoms: 4,
+  numCompletedPoms: 0,
+  numCompletedShortBreaks: 0,
+  isCompletedLongBreak: false,
+  listTasks: [],
+  configs: {
+    pomodoroLength: 25,
+    shortBreakLength: 5,
+    longBreakLength: 15,
+    autoStartPom: false,
+    autoStartBreak: false,
+    longBreakInterval: 4,
+  },
+};
+
 const taskReducers = {
   selectTask: (state, action) => {
     const selectedTask = action.payload;
@@ -108,24 +127,7 @@ const configsReducers = {
 
 export const pomodoroSlice = createSlice({
   name: 'pomodoro',
-  initialState: {
-    isLoading: false,
-    currentTaskId: undefined,
-    currentTaskName: '',
-    numEstimatedPoms: 4,
-    numCompletedPoms: 0,
-    numCompletedShortBreaks: 0,
-    isCompletedLongBreak: false,
-    listTasks: [],
-    configs: {
-      pomodoroLength: 25,
-      shortBreakLength: 5,
-      longBreakLength: 15,
-      autoStartPom: false,
-      autoStartBreak: false,
-      longBreakInterval: 4,
-    },
-  },
+  initialState,
   reducers: {
     ...taskReducers,
     ...pomodoroReducers,

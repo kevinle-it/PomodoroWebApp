@@ -1,0 +1,108 @@
+.settings {
+  &__wrapper {
+    border-radius: 6px;
+    font-weight: bold;
+    color: #555;
+    background-color: #fff;
+    overflow: hidden;
+
+    input:not([type='submit']) {
+      max-width: 60px;
+      height: 35px;
+      padding-left: 6px;
+      border: none;
+      border-radius: 3px;
+      background-color: #efefef;
+    }
+  }
+
+  &__title {
+    padding: 15px 15px 0;
+    font-size: 28px;
+    color: #bbb;
+  }
+
+  &__divider {
+    &--horizontal {
+      margin: 15px;
+      border-bottom: 1px solid #f1eded;
+    }
+  }
+
+  &__section {
+    &__title {
+      padding: 0 15px;
+      font-size: 18px;
+    }
+
+    &__time {
+      &__wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        padding: 0 15px;
+
+        > div {
+          color: #bbb;
+        }
+      }
+    }
+
+    &__auto {
+      &__wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        padding: 0 15px;
+
+        > div {
+          color: #bbb;
+        }
+      }
+    }
+
+    &__interval__wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+
+      > div {
+        padding: 0;
+      }
+
+      > input {
+        border: none;
+        border-radius: 3px;
+        background-color: #efefef;
+      }
+    }
+
+    &__save__wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      margin-top: 15px;
+      padding: 15px;
+      background: #efefef;
+
+      > input {
+        padding: 8px 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        background: #222;
+
+        &:disabled {
+          background: #b2b2b2;
+        }
+      }
+    }
+  }
+}
