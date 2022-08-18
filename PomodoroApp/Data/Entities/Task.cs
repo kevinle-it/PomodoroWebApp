@@ -22,7 +22,7 @@ namespace PomodoroApp.Data.Entities
         public int NumCompletedShortBreaks { get; set; }
 
         [Required]
-        public bool IsCompletedLongBreak { get; set; }
+        public int NumCompletedLongBreaks { get; set; }
 
         [Required]
         public DateTime DateTimeCreated{ get; set; }

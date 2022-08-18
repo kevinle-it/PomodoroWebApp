@@ -29,7 +29,7 @@ namespace PomodoroTest
                     NumEstimatedPoms = 4,
                     NumCompletedPoms = 4,
                     NumCompletedShortBreaks = 3,
-                    IsCompletedLongBreak = true,
+                    NumCompletedLongBreaks = 1,
                     DateTimeCreated = dateTimeCreatedTask
                 });
                 ctx.SaveChanges();
@@ -51,7 +51,7 @@ namespace PomodoroTest
             Assert.AreEqual(4, firstPomodoroTask.NumEstimatedPoms);
             Assert.AreEqual(4, firstPomodoroTask.NumCompletedPoms);
             Assert.AreEqual(3, firstPomodoroTask.NumCompletedShortBreaks);
-            Assert.AreEqual(true, firstPomodoroTask.IsCompletedLongBreak);
+            Assert.AreEqual(1, firstPomodoroTask.NumCompletedLongBreaks);
             Assert.AreEqual(dateTimeCreatedTask, firstPomodoroTask.DateTimeCreated);
         }
 
@@ -70,7 +70,7 @@ namespace PomodoroTest
                     NumEstimatedPoms = 4,
                     NumCompletedPoms = 3,
                     NumCompletedShortBreaks = 3,
-                    IsCompletedLongBreak = false,
+                    NumCompletedLongBreaks = 0,
                     DateTimeCreated = dateTimeCreatedTask
                 });
                 ctx.SaveChanges();
@@ -90,7 +90,7 @@ namespace PomodoroTest
             Assert.AreEqual(4, pomodoroTask.NumEstimatedPoms);
             Assert.AreEqual(4, pomodoroTask.NumCompletedPoms);
             Assert.AreEqual(3, pomodoroTask.NumCompletedShortBreaks);
-            Assert.AreEqual(false, pomodoroTask.IsCompletedLongBreak);
+            Assert.AreEqual(0, pomodoroTask.NumCompletedLongBreaks);
             Assert.AreEqual(dateTimeCreatedTask, pomodoroTask.DateTimeCreated);
 
             using (PomodoroContext ctx = new(optionsBuilder.Options))
@@ -102,7 +102,7 @@ namespace PomodoroTest
                 Assert.AreEqual(4, inDbPomodoroTask.NumEstimatedPoms);
                 Assert.AreEqual(4, inDbPomodoroTask.NumCompletedPoms);
                 Assert.AreEqual(3, inDbPomodoroTask.NumCompletedShortBreaks);
-                Assert.AreEqual(false, inDbPomodoroTask.IsCompletedLongBreak);
+                Assert.AreEqual(0, inDbPomodoroTask.NumCompletedLongBreaks);
                 Assert.AreEqual(dateTimeCreatedTask, inDbPomodoroTask.DateTimeCreated);
             }
         }

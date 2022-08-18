@@ -125,7 +125,7 @@ namespace PomodoroApp.Controllers
                 }
                 pomodoroTask.NumCompletedPoms = 0;
                 pomodoroTask.NumCompletedShortBreaks = 0;
-                pomodoroTask.IsCompletedLongBreak = false;
+                pomodoroTask.NumCompletedLongBreaks = 0;
                 pomodoroTask.DateTimeCreated = DateTime.UtcNow;
                 _context.Tasks.Add(pomodoroTask);
                 await _context.SaveChangesAsync();
