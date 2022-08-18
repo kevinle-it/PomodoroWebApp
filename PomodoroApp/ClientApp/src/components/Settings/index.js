@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectConfigs } from '../../store/selectors/pomodoroSelector';
-import { initialState } from '../../store/slices/pomodoroSlice';
+import { initialState, requestUpdatePomodoroConfigs } from '../../store/slices/pomodoroSlice';
 import ToggleSwitch from '../ToggleSwitch';
 import './styles.scss';
 
@@ -16,6 +16,7 @@ const INPUT_NAMES = Object.freeze({
 
 const Settings = () => {
   const form = useRef();
+  const dispatch = useDispatch();
   const [disabled, setDisabled] = useState(true);
   const configs = useSelector(selectConfigs);
 
@@ -43,6 +44,8 @@ const Settings = () => {
   }, [configs, setFormData]);
 
   const handleSubmit = useCallback((e) => {
+    setDisabled(true);
+
     const timePomodoro = e.target[INPUT_NAMES.TIME_POMODORO].value;
     const timeShortBreak = e.target[INPUT_NAMES.TIME_SHORT_BREAK].value;
     const timeLongBreak = e.target[INPUT_NAMES.TIME_LONG_BREAK].value;
@@ -50,8 +53,17 @@ const Settings = () => {
     const autoStartBreaks = e.target[INPUT_NAMES.AUTO_START_BREAKS].checked;
     const longBreakInterval = e.target[INPUT_NAMES.LONG_BREAK_INTERVAL].value;
 
+    dispatch(requestUpdatePomodoroConfigs({
+      pomodoroLength: timePomodoro,
+      shortBreakLength: timeShortBreak,
+      longBreakLength: timeLongBreak,
+      autoStartPom: autoStartPomodoros,
+      autoStartBreak: autoStartBreaks,
+      longBreakInterval: longBreakInterval,
+    }));
+
     e.preventDefault();
-  }, []);
+  }, [dispatch]);
 
   const onFormChange = useCallback((_) => {
     // Validate if all number inputs are greater than 0
