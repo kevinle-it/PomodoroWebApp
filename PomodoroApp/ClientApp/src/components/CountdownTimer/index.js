@@ -5,10 +5,12 @@ import { getCurrentPomodoroMode, getNextPomodoroMode, POMODORO_MODES } from '../
 import {
   selectConfigs,
   selectCurrentTaskId,
+  selectNumCompletedLongBreaks,
   selectNumCompletedPoms,
   selectNumCompletedShortBreaks,
 } from '../../store/selectors/pomodoroSelector';
 import {
+  requestOnCompleteCurrentLongBreak,
   requestOnCompleteCurrentPomodoro,
   requestOnCompleteCurrentShortBreak,
 } from '../../store/slices/pomodoroSlice';
@@ -24,11 +26,13 @@ const CountdownTimer = () => {
     currentTaskId,
     numCompletedPoms,
     numCompletedShortBreaks,
+    numCompletedLongBreaks,
     configs,
   } = useSelector((state) => ({
     currentTaskId: selectCurrentTaskId(state),
     numCompletedPoms: selectNumCompletedPoms(state),
     numCompletedShortBreaks: selectNumCompletedShortBreaks(state),
+    numCompletedLongBreaks: selectNumCompletedLongBreaks(state),
     configs: selectConfigs(state),
   }));
 
@@ -44,8 +48,26 @@ const CountdownTimer = () => {
   const [currentMode, setCurrentMode] = useState(() => getCurrentPomodoroMode(
     numCompletedPoms,
     numCompletedShortBreaks,
+    numCompletedLongBreaks,
     configs.longBreakInterval,
   ));
+
+  useEffect(() => {
+    if (currentTaskId) {
+      setCurrentMode(getCurrentPomodoroMode(
+        numCompletedPoms,
+        numCompletedShortBreaks,
+        numCompletedLongBreaks,
+        configs.longBreakInterval,
+      ));
+    }
+  }, [
+    configs.longBreakInterval,
+    currentTaskId,
+    numCompletedLongBreaks,
+    numCompletedPoms,
+    numCompletedShortBreaks,
+  ]);
 
   useEffect(() => {
     switch (currentMode) {
@@ -137,6 +159,7 @@ const CountdownTimer = () => {
           dispatch(requestOnCompleteCurrentShortBreak(currentTaskId));
           break;
         case POMODORO_MODES.LONG_BREAK.type:
+          dispatch(requestOnCompleteCurrentLongBreak(currentTaskId));
           break;
         default:
           dispatch(requestOnCompleteCurrentPomodoro(currentTaskId));

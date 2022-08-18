@@ -7,7 +7,7 @@ export const initialState = {
   numEstimatedPoms: 4,
   numCompletedPoms: 0,
   numCompletedShortBreaks: 0,
-  isCompletedLongBreak: false,
+  numCompletedLongBreaks: 0,
   listTasks: [],
   configs: {
     pomodoroLength: 25,
@@ -21,13 +21,18 @@ export const initialState = {
 
 const taskReducers = {
   selectTask: (state, action) => {
-    const selectedTask = action.payload;
-    state.currentTaskId = selectedTask?.taskId;
-    state.currentTaskName = selectedTask?.name;
-    state.numEstimatedPoms = selectedTask?.numEstimatedPoms;
-    state.numCompletedPoms = selectedTask?.numCompletedPoms;
-    state.numCompletedShortBreaks = selectedTask?.numCompletedShortBreaks;
-    state.isCompletedLongBreak = selectedTask?.isCompletedLongBreak;
+    const selectedTaskIndex = action.payload;
+    if (selectedTaskIndex !== undefined
+        && selectedTaskIndex !== null
+        && selectedTaskIndex >= 0) {
+      const selectedTask = state.listTasks[selectedTaskIndex];
+      state.currentTaskId = selectedTask?.taskId;
+      state.currentTaskName = selectedTask?.name;
+      state.numEstimatedPoms = selectedTask?.numEstimatedPoms;
+      state.numCompletedPoms = selectedTask?.numCompletedPoms;
+      state.numCompletedShortBreaks = selectedTask?.numCompletedShortBreaks;
+      state.numCompletedLongBreaks = selectedTask?.numCompletedLongBreaks;
+    }
   },
   requestCreateNewPomodoroTask: (state) => {
     state.isLoading = true;
@@ -65,7 +70,7 @@ const pomodoroReducers = {
     state.numEstimatedPoms = pomodoroTask?.numEstimatedPoms;
     state.numCompletedPoms = pomodoroTask?.numCompletedPoms;
     state.numCompletedShortBreaks = pomodoroTask?.numCompletedShortBreaks;
-    state.isCompletedLongBreak = pomodoroTask?.isCompletedLongBreak;
+    state.numCompletedLongBreaks = pomodoroTask?.numCompletedLongBreaks;
 
     const foundIndex = state.listTasks.findIndex(task => task.taskId === pomodoroTask?.taskId);
     if (foundIndex !== -1) {
@@ -88,7 +93,7 @@ const pomodoroReducers = {
     state.numEstimatedPoms = pomodoroTask?.numEstimatedPoms;
     state.numCompletedPoms = pomodoroTask?.numCompletedPoms;
     state.numCompletedShortBreaks = pomodoroTask?.numCompletedShortBreaks;
-    state.isCompletedLongBreak = pomodoroTask?.isCompletedLongBreak;
+    state.numCompletedLongBreaks = pomodoroTask?.numCompletedLongBreaks;
 
     const foundIndex = state.listTasks.findIndex(task => task.taskId === pomodoroTask?.taskId);
     if (foundIndex !== -1) {
@@ -98,6 +103,29 @@ const pomodoroReducers = {
     }
   },
   requestOnCompleteCurrentShortBreakError: (state) => {
+    state.isLoading = false;
+  },
+  requestOnCompleteCurrentLongBreak: (state) => {
+    state.isLoading = true;
+  },
+  requestOnCompleteCurrentLongBreakSuccess: (state, action) => {
+    const pomodoroTask = action.payload;
+    state.isLoading = false;
+    state.currentTaskId = pomodoroTask?.taskId;
+    state.currentTaskName = pomodoroTask?.name;
+    state.numEstimatedPoms = pomodoroTask?.numEstimatedPoms;
+    state.numCompletedPoms = pomodoroTask?.numCompletedPoms;
+    state.numCompletedShortBreaks = pomodoroTask?.numCompletedShortBreaks;
+    state.numCompletedLongBreaks = pomodoroTask?.numCompletedLongBreaks;
+
+    const foundIndex = state.listTasks.findIndex(task => task.taskId === pomodoroTask?.taskId);
+    if (foundIndex !== -1) {
+      state.listTasks[foundIndex].numCompletedLongBreaks = pomodoroTask?.numCompletedLongBreaks;
+    } else {
+      state.listTasks.push(pomodoroTask);
+    }
+  },
+  requestOnCompleteCurrentLongBreakError: (state) => {
     state.isLoading = false;
   },
 };
@@ -149,6 +177,9 @@ export const {
   requestOnCompleteCurrentShortBreak,
   requestOnCompleteCurrentShortBreakSuccess,
   requestOnCompleteCurrentShortBreakError,
+  requestOnCompleteCurrentLongBreak,
+  requestOnCompleteCurrentLongBreakSuccess,
+  requestOnCompleteCurrentLongBreakError,
   requestGetPomodoroConfigs,
   requestGetPomodoroConfigsSuccess,
   requestGetPomodoroConfigsError,

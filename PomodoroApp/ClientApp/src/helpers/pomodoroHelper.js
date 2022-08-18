@@ -25,6 +25,7 @@ export const POMODORO_MODES = Object.freeze({
 export const getCurrentPomodoroMode = (
   numCompletedPoms,
   numCompletedShortBreaks,
+  numCompletedLongBreaks,
   longBreakInterval,
 ) => {
   if (numCompletedPoms === 0) {
@@ -34,6 +35,8 @@ export const getCurrentPomodoroMode = (
     if (numCompletedShortBreaks < numCompletedPoms) {
       return POMODORO_MODES.SHORT_BREAK.type;
     }
+    return POMODORO_MODES.POMODORO.type;
+  } else if (numCompletedPoms / longBreakInterval === numCompletedLongBreaks) {
     return POMODORO_MODES.POMODORO.type;
   }
   return POMODORO_MODES.LONG_BREAK.type;

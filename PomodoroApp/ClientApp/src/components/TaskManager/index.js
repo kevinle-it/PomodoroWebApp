@@ -9,15 +9,32 @@ import { ReactComponent as TriangleUpIcon } from './../../assets/ic_triangle_up.
 import './styles.scss';
 
 const TaskManager = () => {
+  const initialSelectedTaskIndex = 0;
   const dispatch = useDispatch();
   const listTasks = useSelector(selectListTasks);
   const [listTasksToShow, setListTasksToShow] = useState([]);
 
   useEffect(() => {
     if (listTasks?.length > 0) {
-      setListTasksToShow(listTasks);
+      dispatch(selectTask(initialSelectedTaskIndex));
+      setListTasksToShow(listTasks.map((task, index) => {
+        if (task.isSelected && index !== initialSelectedTaskIndex) {
+          // Reset selected
+          return {
+            ...task,
+            isSelected: false,
+          };
+        } else if (index === initialSelectedTaskIndex) {
+          // Set new selected
+          return {
+            ...task,
+            isSelected: true,
+          };
+        }
+        return { ...task };
+      }));
     }
-  }, [listTasks]);
+  }, [dispatch, listTasks]);
 
   useEffect(() => {
     dispatch(requestGetAllPomodoroTasks());
@@ -67,7 +84,7 @@ const TaskManager = () => {
   }, [dispatch]);
 
   const onTaskClick = useCallback((selectedIndex) => {
-    dispatch(selectTask(listTasksToShow?.at(selectedIndex)));
+    dispatch(selectTask(selectedIndex));
     setListTasksToShow(listTasksToShow.map((task, index) => {
       if (task.isSelected && index !== selectedIndex) {
         // Reset selected

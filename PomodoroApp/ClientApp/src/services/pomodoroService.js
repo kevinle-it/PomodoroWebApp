@@ -23,6 +23,11 @@ export const requestOnCompleteCurrentShortBreak = async(taskId) => {
   return await axios.put(`/api/pomodoro/complete/shortbreak/${taskId}`);
 };
 
+export const requestOnCompleteCurrentLongBreak = async(taskId) => {
+  // Return the current pomodoroTask object
+  return await axios.put(`/api/pomodoro/complete/longbreak/${taskId}`);
+};
+
 export const requestGetPomodoroConfigs = async() => {
   // Return the current pomodoro configs
   return await axios.get(`/api/pomodoro/config`);

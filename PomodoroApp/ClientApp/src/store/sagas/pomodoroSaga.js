@@ -3,6 +3,7 @@ import {
   requestCreateNewPomodoroTask,
   requestGetAllPomodoroTasks,
   requestGetPomodoroConfigs,
+  requestOnCompleteCurrentLongBreak,
   requestOnCompleteCurrentPomodoro,
   requestOnCompleteCurrentShortBreak,
   requestUpdatePomodoroConfigs,
@@ -14,6 +15,8 @@ import {
   requestGetAllPomodoroTasksSuccess,
   requestGetPomodoroConfigsError,
   requestGetPomodoroConfigsSuccess,
+  requestOnCompleteCurrentLongBreakError,
+  requestOnCompleteCurrentLongBreakSuccess,
   requestOnCompleteCurrentPomodoroError,
   requestOnCompleteCurrentPomodoroSuccess,
   requestOnCompleteCurrentShortBreakError,
@@ -81,6 +84,21 @@ function* onCompleteCurrentShortBreak(action) {
   }
 }
 
+function* onCompleteCurrentLongBreak(action) {
+  const taskId = action.payload;
+  try {
+    const response = yield call(requestOnCompleteCurrentLongBreak, taskId);
+    if (response?.status === 200) {
+      const pomodoroTask = response?.data;
+      yield put(requestOnCompleteCurrentLongBreakSuccess(pomodoroTask));
+    } else {
+      yield put(requestOnCompleteCurrentLongBreakError());
+    }
+  } catch (e) {
+    yield put(requestOnCompleteCurrentLongBreakError());
+  }
+}
+
 function* getPomodoroConfigs() {
   try {
     const response = yield call(requestGetPomodoroConfigs);
@@ -126,6 +144,7 @@ function* pomodoroSaga() {
   yield takeLeading('pomodoro/requestGetAllPomodoroTasks', getAllPomodoroTasks);
   yield takeLeading('pomodoro/requestOnCompleteCurrentPomodoro', onCompleteCurrentPomodoro);
   yield takeLeading('pomodoro/requestOnCompleteCurrentShortBreak', onCompleteCurrentShortBreak);
+  yield takeLeading('pomodoro/requestOnCompleteCurrentLongBreak', onCompleteCurrentLongBreak);
   yield takeLeading('pomodoro/requestGetPomodoroConfigs', getPomodoroConfigs);
   yield takeLeading('pomodoro/requestUpdatePomodoroConfigs', updatePomodoroConfigs);
 }

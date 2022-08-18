@@ -6,6 +6,7 @@ import {
   selectConfigs,
   selectCurrentTaskId,
   selectCurrentTaskName,
+  selectNumCompletedLongBreaks,
   selectNumCompletedPoms,
   selectNumCompletedShortBreaks,
 } from '../../store/selectors/pomodoroSelector';
@@ -19,6 +20,7 @@ const Home = () => {
     currentTaskName,
     numCompletedPoms,
     numCompletedShortBreaks,
+    numCompletedLongBreaks,
     configs = {},
   } = useSelector(
     createSelector(
@@ -26,18 +28,21 @@ const Home = () => {
       selectCurrentTaskName,
       selectNumCompletedPoms,
       selectNumCompletedShortBreaks,
+      selectNumCompletedLongBreaks,
       selectConfigs,
       (
         currentTaskId,
         currentTaskName,
         numCompletedPoms,
         numCompletedShortBreaks,
+        numCompletedLongBreaks,
         configs,
       ) => ({
         currentTaskId,
         currentTaskName,
         numCompletedPoms,
         numCompletedShortBreaks,
+        numCompletedLongBreaks,
         configs,
       }),
     ));
@@ -45,8 +50,14 @@ const Home = () => {
   const currentMode = useMemo(() => getCurrentPomodoroMode(
     numCompletedPoms,
     numCompletedShortBreaks,
+    numCompletedLongBreaks,
     configs.longBreakInterval,
-  ), [configs, numCompletedPoms, numCompletedShortBreaks]);
+  ), [
+    configs.longBreakInterval,
+    numCompletedLongBreaks,
+    numCompletedPoms,
+    numCompletedShortBreaks,
+  ]);
 
   const modeMessage = useMemo(() => {
     switch (currentMode) {
