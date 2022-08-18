@@ -176,20 +176,47 @@ const CountdownTimer = () => {
       switch (nextPomodoroMode) {
         case POMODORO_MODES.POMODORO.type:
           setMinutes(configs?.pomodoroLength || POMODORO_MODES.POMODORO.time.minutes);
+          if (configs?.autoStartPom) {
+            setShouldRun(true);
+          }
           break;
         case POMODORO_MODES.SHORT_BREAK.type:
           setMinutes(configs?.shortBreakLength || POMODORO_MODES.SHORT_BREAK.time.minutes);
+          if (configs?.autoStartBreak) {
+            setShouldRun(true);
+          }
           break;
         case POMODORO_MODES.LONG_BREAK.type:
           setMinutes(configs?.longBreakLength || POMODORO_MODES.LONG_BREAK.time.minutes);
+          if (configs?.autoStartBreak) {
+            setShouldRun(true);
+          }
           break;
         default:
           setMinutes(configs?.pomodoroLength || POMODORO_MODES.POMODORO.time.minutes);
+          if (configs?.autoStartPom) {
+            setShouldRun(true);
+          }
           break;
       }
     }
-  }, [configs.longBreakInterval, configs.longBreakLength, configs.pomodoroLength, configs.shortBreakLength, currentMode,
-      currentTaskId, dispatch, minutes, numCompletedPoms, numCompletedShortBreaks, seconds, setMinutes]);
+  }, [
+    configs.autoStartBreak,
+    configs.autoStartPom,
+    configs.longBreakInterval,
+    configs.longBreakLength,
+    configs.pomodoroLength,
+    configs.shortBreakLength,
+    currentMode,
+    currentTaskId,
+    dispatch,
+    minutes,
+    numCompletedPoms,
+    numCompletedShortBreaks,
+    seconds,
+    setMinutes,
+    setShouldRun,
+  ]);
 
   return (
     <div className="countdown-timer__wrapper">
