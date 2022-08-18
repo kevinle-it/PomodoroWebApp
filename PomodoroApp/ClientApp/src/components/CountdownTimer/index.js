@@ -53,14 +53,12 @@ const CountdownTimer = () => {
   ));
 
   useEffect(() => {
-    if (currentTaskId) {
-      setCurrentMode(getCurrentPomodoroMode(
-        numCompletedPoms,
-        numCompletedShortBreaks,
-        numCompletedLongBreaks,
-        configs.longBreakInterval,
-      ));
-    }
+    setCurrentMode(getCurrentPomodoroMode(
+      numCompletedPoms,
+      numCompletedShortBreaks,
+      numCompletedLongBreaks,
+      configs.longBreakInterval,
+    ));
   }, [
     configs.longBreakInterval,
     currentTaskId,

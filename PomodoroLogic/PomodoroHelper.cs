@@ -43,7 +43,7 @@ namespace PomodoroLogic
             }
             if (numCompletedPoms % longBreakInterval != 0)
             {
-                if (numCompletedShortBreaks < numCompletedPoms)
+                if (numCompletedShortBreaks + numCompletedLongBreaks < numCompletedPoms)
                 {
                     return POMODORO_MODE.SHORT_BREAK;
                 }

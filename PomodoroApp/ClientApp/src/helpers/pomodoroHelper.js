@@ -32,7 +32,7 @@ export const getCurrentPomodoroMode = (
     return POMODORO_MODES.POMODORO.type;
   }
   if (numCompletedPoms % longBreakInterval !== 0) {
-    if (numCompletedShortBreaks < numCompletedPoms) {
+    if (numCompletedShortBreaks + numCompletedLongBreaks < numCompletedPoms) {
       return POMODORO_MODES.SHORT_BREAK.type;
     }
     return POMODORO_MODES.POMODORO.type;
