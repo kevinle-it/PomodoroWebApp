@@ -49,6 +49,7 @@ namespace PomodoroApp.Controllers
             var pomodoroMode = pomodoroHelper.getCurrentPomodoroMode(
                     pomodoroTask.NumCompletedPoms,
                     pomodoroTask.NumCompletedShortBreaks,
+                    pomodoroTask.NumCompletedLongBreaks,
                     pomodoroConfig.LongBreakInterval
                 );
             if (pomodoroMode != PomodoroHelper.POMODORO_MODE.POMODORO)
@@ -89,6 +90,7 @@ namespace PomodoroApp.Controllers
             var pomodoroMode = pomodoroHelper.getCurrentPomodoroMode(
                     pomodoroTask.NumCompletedPoms,
                     pomodoroTask.NumCompletedShortBreaks,
+                    pomodoroTask.NumCompletedLongBreaks,
                     pomodoroConfig.LongBreakInterval
                 );
             if (pomodoroMode != PomodoroHelper.POMODORO_MODE.SHORT_BREAK)
@@ -98,6 +100,47 @@ namespace PomodoroApp.Controllers
 
             // Update number of completed Short Breaks
             pomodoroTask.NumCompletedShortBreaks = pomodoroHelper.getNewNumCompletedShortBreaks(pomodoroTask.NumCompletedShortBreaks);
+            _context.Entry(pomodoroTask).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return Ok(pomodoroTask);
+        }
+
+        // PUT: api/Pomodoro/complete/longbreak/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("complete/longbreak/{taskId}")]
+        public async Task<ActionResult<PomodoroTask>> OnCurrentLongBreakComplete(int taskId)
+        {
+            var pomodoroTask = await _context.Tasks.FindAsync(taskId);
+
+            if (pomodoroTask == null)
+            {
+                return NotFound("Task not found.");
+            }
+
+            var pomodoroConfig = await _context.PomodoroConfigurations.FirstOrDefaultAsync();
+            // Validate current Pomodoro Mode
+            var pomodoroMode = pomodoroHelper.getCurrentPomodoroMode(
+                    pomodoroTask.NumCompletedPoms,
+                    pomodoroTask.NumCompletedShortBreaks,
+                    pomodoroTask.NumCompletedLongBreaks,
+                    pomodoroConfig.LongBreakInterval
+                );
+            if (pomodoroMode != PomodoroHelper.POMODORO_MODE.LONG_BREAK)
+            {
+                return BadRequest($"Invalid Mode [Long Break] request. Request this mode instead: {pomodoroMode.ToString()}");
+            }
+
+            // Update number of completed Long Breaks
+            pomodoroTask.NumCompletedLongBreaks = pomodoroHelper.getNewNumCompletedLongBreaks(pomodoroTask.NumCompletedLongBreaks);
             _context.Entry(pomodoroTask).State = EntityState.Modified;
 
             try

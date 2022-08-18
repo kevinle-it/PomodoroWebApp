@@ -27,15 +27,15 @@ namespace PomodoroTest
         }
 
         [TestMethod]
-        [DataRow(true, 2, 2, true)]
-        [DataRow(false, 6, 5, false)]
-        [DataRow(false, 9, 8, false)]
-        [DataRow(true, 15, 18, true)]
-        [DataRow(true, 20, 20, true)]
-        [DataRow(true, 22, 29, true)]
-        public void taskHelperCanDetermineIfTaskIsCompleted(bool expectedIsTaskCompleted, int numEstimatedPoms, int numCompletedPoms, bool isCompletedLongBreak)
+        [DataRow(true, 2, 2)]
+        [DataRow(false, 6, 5)]
+        [DataRow(false, 9, 8)]
+        [DataRow(true, 15, 18)]
+        [DataRow(true, 20, 20)]
+        [DataRow(true, 22, 29)]
+        public void taskHelperCanDetermineIfTaskIsCompleted(bool expectedIsTaskCompleted, int numEstimatedPoms, int numCompletedPoms)
         {
-            Assert.AreEqual(expectedIsTaskCompleted, taskHelper.isTaskCompleted(numEstimatedPoms, numCompletedPoms, isCompletedLongBreak));
+            Assert.AreEqual(expectedIsTaskCompleted, taskHelper.isTaskCompleted(numEstimatedPoms, numCompletedPoms));
         }
     }
 }

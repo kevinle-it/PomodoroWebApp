@@ -3,9 +3,9 @@ namespace PomodoroLogic
 {
     public class TaskHelper
     {
-        public bool isTaskCompleted(int numEstimatedPoms, int numCompletedPoms, bool isCompletedLongBreak)
+        public bool isTaskCompleted(int numEstimatedPoms, int numCompletedPoms)
         {
-            return numCompletedPoms >= numEstimatedPoms && isCompletedLongBreak;
+            return numCompletedPoms >= numEstimatedPoms;
         }
     }
 }

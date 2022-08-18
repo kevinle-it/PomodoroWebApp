@@ -21,6 +21,11 @@ namespace PomodoroLogic
             return prevNumCompletedShortBreaks + 1;
         }
 
+        public int getNewNumCompletedLongBreaks(int prevNumCompletedLongBreaks)
+        {
+            return prevNumCompletedLongBreaks + 1;
+        }
+
         public bool shouldStartLongBreak(int longBreakInterval, int numCompletedShortBreaks)
         {
             return numCompletedShortBreaks + 1 == longBreakInterval;
@@ -29,6 +34,7 @@ namespace PomodoroLogic
         public POMODORO_MODE getCurrentPomodoroMode(
             int numCompletedPoms,
             int numCompletedShortBreaks,
+            int numCompletedLongBreaks,
             int longBreakInterval)
         {
             if (numCompletedPoms == 0)
@@ -41,6 +47,9 @@ namespace PomodoroLogic
                 {
                     return POMODORO_MODE.SHORT_BREAK;
                 }
+                return POMODORO_MODE.POMODORO;
+            } else if (numCompletedPoms / longBreakInterval == numCompletedLongBreaks)
+            {
                 return POMODORO_MODE.POMODORO;
             }
             return POMODORO_MODE.LONG_BREAK;
