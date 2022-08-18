@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectListTasks } from '../../store/selectors/pomodoroSelector';
+import { selectCurrentTaskId, selectListTasks } from '../../store/selectors/pomodoroSelector';
 import { requestCreateNewPomodoroTask, requestGetAllPomodoroTasks, selectTask } from '../../store/slices/pomodoroSlice';
 import PomodoroTask from '../PomodoroTask';
 import { ReactComponent as PlusIcon } from './../../assets/ic_plus.svg';
@@ -10,31 +10,39 @@ import './styles.scss';
 
 const TaskManager = () => {
   const initialSelectedTaskIndex = 0;
+  const isInitialLoad = useRef(true);
   const dispatch = useDispatch();
-  const listTasks = useSelector(selectListTasks);
+  const {
+    currentTaskId,
+    listTasks,
+  } = useSelector((state) => ({
+    currentTaskId: selectCurrentTaskId(state),
+    listTasks: selectListTasks(state),
+  }));
   const [listTasksToShow, setListTasksToShow] = useState([]);
 
   useEffect(() => {
     if (listTasks?.length > 0) {
-      dispatch(selectTask(initialSelectedTaskIndex));
+      if (isInitialLoad.current) {
+        dispatch(selectTask(initialSelectedTaskIndex));
+        isInitialLoad.current = false;
+      }
       setListTasksToShow(listTasks.map((task, index) => {
-        if (task.isSelected && index !== initialSelectedTaskIndex) {
-          // Reset selected
-          return {
-            ...task,
-            isSelected: false,
-          };
-        } else if (index === initialSelectedTaskIndex) {
+        if (index === (currentTaskId - 1 || initialSelectedTaskIndex)) {
           // Set new selected
           return {
             ...task,
             isSelected: true,
           };
         }
-        return { ...task };
+        // Reset selected
+        return {
+          ...task,
+          isSelected: false,
+        };
       }));
     }
-  }, [dispatch, listTasks]);
+  }, [currentTaskId, dispatch, listTasks]);
 
   useEffect(() => {
     dispatch(requestGetAllPomodoroTasks());
@@ -86,20 +94,18 @@ const TaskManager = () => {
   const onTaskClick = useCallback((selectedIndex) => {
     dispatch(selectTask(selectedIndex));
     setListTasksToShow(listTasksToShow.map((task, index) => {
-      if (task.isSelected && index !== selectedIndex) {
-        // Reset selected
-        return {
-          ...task,
-          isSelected: false,
-        };
-      } else if (index === selectedIndex) {
+      if (index === selectedIndex) {
         // Set new selected
         return {
           ...task,
           isSelected: true,
         };
       }
-      return { ...task };
+      // Reset selected
+      return {
+        ...task,
+        isSelected: false,
+      };
     }));
   }, [dispatch, listTasksToShow]);
 
