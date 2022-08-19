@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -179,6 +180,95 @@ namespace PomodoroTest
                 );
             addTaskButton.Exists().Should().BeTrue();
             addTaskButton.Text.Should().Be("Add Task");
+        }
+
+        [TestMethod]
+        [DataRow("Test Task 1", 1, true)]
+        [DataRow("Test Task 2", 2, false)]
+        [DataRow("Test Task 30", 30, false)]
+        [DataRow("Test Task 4/0", 400, false)]
+        [DataRow("Test Task 5-9", 599, false)]
+        [DataRow("Test Task 69", 1000, false)]
+        public void ClickSaveButtonWithDataFillInShouldDisplayAddedTaskWithCorrectDataOnTaskSection(
+                string taskName, int numEstimatedPomodoros, bool waitInitialLoad
+            )
+        {
+            if (waitInitialLoad)
+            {
+                Thread.Sleep(3000);
+            }
+            var taskSectionWrapper = _webDriver.FindElementSafe(
+                    By.ClassName("task-manager__wrapper")
+                );
+            taskSectionWrapper.Exists().Should().BeTrue();
+
+            var addTaskButton = taskSectionWrapper.FindElementSafe(
+                    By.ClassName("task-manager__add-task-button")
+                );
+            addTaskButton.Exists().Should().BeTrue();
+            addTaskButton.Click();
+
+            var addTaskBox = taskSectionWrapper.FindElementSafe(
+                    By.TagName("form")
+                );
+            addTaskBox.Exists().Should().BeTrue();
+
+            var taskNameInput = addTaskBox.FindElementSafe(
+                    By.ClassName("task-manager__add-task-form__task-name-input")
+                );
+            taskNameInput.Exists().Should().BeTrue();
+            taskNameInput.Click();
+            taskNameInput.SendKeys(taskName);
+
+            var numEstimatedPomsButtons = addTaskBox.FindElements(
+                    By.CssSelector(".task-manager__add-task-form__estimated-poms__input__wrapper > button")
+                );
+            numEstimatedPomsButtons.Count.Should().Be(2);
+            for (int i = 1; i < numEstimatedPomodoros; i++)
+            {
+                numEstimatedPomsButtons[0].Click();
+            }
+
+            var submitSectionWrapper = taskSectionWrapper.FindElementSafe(
+                    By.ClassName("task-manager__add-task-form__submit__wrapper")
+                );
+            submitSectionWrapper.Exists().Should().BeTrue();
+
+            var saveButton = submitSectionWrapper.FindElementSafe(
+                    By.TagName("input")
+                );
+            saveButton.Exists().Should().BeTrue();
+            saveButton.GetAttribute("value").Should().Be("Save");
+            saveButton.Click();
+
+            Thread.Sleep(2000);
+
+            var createdTaskContainer = _webDriver.FindElementWaitSafe(
+                    By.XPath(
+                            $"//div[" +
+                            $"@class='pomodoro-task__wrapper' " +
+                            $"and .//*[text()='{taskName}'] " +
+                            $"and .//*[" +
+                                    $"@class='pomodoro-task__summary' " +
+                                    $"and substring-after(., '/ ') = '{numEstimatedPomodoros}'" +
+                                    $"]" +
+                            $"]"
+                        ),
+                    10
+                );
+            createdTaskContainer.Exists().Should().BeTrue();
+
+            var createdTaskName = createdTaskContainer.FindElementSafe(
+                    By.ClassName("pomodoro-task__name")
+                );
+            createdTaskName.Text.Should().Be(taskName);
+
+            var createdTaskSummary = createdTaskContainer.FindElementSafe(
+                    By.ClassName("pomodoro-task__summary")
+                );
+            var matchedNumEstimatedPoms = new Regex(@"^(\d*)\s/\s(\d*)$").Match(createdTaskSummary.Text);
+            matchedNumEstimatedPoms.Groups[1].Value.Should().Be("0");
+            matchedNumEstimatedPoms.Groups[2].Value.Should().Be(numEstimatedPomodoros.ToString());
         }
 
         [TestMethod]
